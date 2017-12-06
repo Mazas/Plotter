@@ -15,13 +15,13 @@ import java.util.List;
 
 public class IOClass {
 
-    public void saveSource(ArrayList<XYChart.Series<String, Number>> lines,String xAxis,String yAxis, String path){
+    public void saveSource(ArrayList<XYChart.Series<Number, Number>> lines,String xAxis,String yAxis, String path){
         File file = new File(path);
         String writable ="$xAxisName{"+xAxis+"}\n$yAxisName{"+yAxis+"}\n";
-        for(XYChart.Series<String, Number> line:lines) {
+        for(XYChart.Series<Number, Number> line:lines) {
             writable += "$"+line.getName() + "{\n\t";
             String tmp = ",\n\t";
-            for (XYChart.Data<String, Number> l : line.getData()) {
+            for (XYChart.Data<Number, Number> l : line.getData()) {
                 writable+=l.getXValue() + " ";
                 tmp += l.getYValue() + " ";
             }

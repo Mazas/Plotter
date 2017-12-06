@@ -2,9 +2,7 @@ package Plotter.Classes;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.chart.*;
 import javafx.stage.FileChooser;
@@ -15,13 +13,13 @@ import java.util.ArrayList;
 
 public class Controller {
     private IOClass io = new IOClass();
+    private boolean showSymbols=true;
 
-    @FXML
-    private LineChart<String, Number> graph;
-    @FXML
-    private TextField nameInput, xLabel, yLabel;
-    @FXML
-    private TextArea xPoints, yPoints, lineList;
+    @FXML private CheckMenuItem drawSymbolsButton, setBoundsButton;
+    @FXML private LineChart<Number, Number> graph;
+    @FXML private TextField nameInput, xLabel, yLabel;
+    @FXML private TextArea xPoints, yPoints, lineList;
+    @FXML private NumberAxis xAxis, yAxis;
 
     public void close(ActionEvent actionEvent) {
         System.exit(0);
@@ -58,7 +56,7 @@ public class Controller {
 
     public void plot(ActionEvent actionEvent) {
         graph.getData().clear();
-        for (XYChart.Series<String, Number> l : inputToList()) {
+        for (XYChart.Series<Number, Number> l : inputToList()) {
             graph.getData().add(l);
         }
     }
@@ -88,8 +86,8 @@ public class Controller {
         }
     }
 
-    private ArrayList<XYChart.Series<String, Number>> inputToList(){
-        ArrayList<XYChart.Series<String, Number>> lines = new ArrayList<>();
+    private ArrayList<XYChart.Series<Number, Number>> inputToList(){
+        ArrayList<XYChart.Series<Number, Number>> lines = new ArrayList<>();
         String[] input = lineList.getText().trim().split("\\$");
         try {
             if (input.length>1) {
@@ -101,13 +99,15 @@ public class Controller {
                         graph.getYAxis().setLabel(anInput.substring(10, anInput.indexOf('}')));
                         yLabel.setText(anInput.substring(10, anInput.indexOf('}')));
                     } else if (anInput.contains("{") && anInput.contains("}")) {
-                        XYChart.Series<String, Number> line = new XYChart.Series<>();
+                        XYChart.Series<Number, Number> line = new XYChart.Series<>();
                         line.setName(anInput.substring(0, anInput.indexOf('{')));
                         String[] dataX = anInput.substring(anInput.indexOf('{') + 1, anInput.indexOf(',')).trim().split(" ");
                         String[] dataY = anInput.substring(anInput.indexOf(',') + 1, anInput.indexOf('}')).trim().split(" ");
 
                         for (int a = 0; a < dataX.length; a++) {
-                            line.getData().add(new XYChart.Data<>(dataX[a].trim(), Integer.parseInt(dataY[a].trim())));
+                            XYChart.Data<Number,Number> data = new XYChart.Data<>(Double.parseDouble(dataX[a].trim()), Double.parseDouble(dataY[a].trim()));
+                            data.setNode(new NodeLabel(Double.parseDouble(dataY[a].trim())));
+                            line.getData().add(data);
                         }
                         lines.add(line);
                     }
@@ -144,5 +144,41 @@ public class Controller {
                 break;
         }
         return file;
+    }
+
+    public void drawSymbols(ActionEvent actionEvent) {
+        //System.out.println(drawSymbolsButton.isSelected());
+        if (!graph.getData().isEmpty()) {
+            showSymbols = drawSymbolsButton.isSelected();
+        }else {
+            drawSymbolsButton.setSelected(showSymbols);
+        }
+        graph.setCreateSymbols(showSymbols);
+    }
+
+    public void setBounds(ActionEvent actionEvent) {
+        if (!setBoundsButton.isSelected()||graph.getData().size()<1){
+            xAxis.setAutoRanging(true);
+            setBoundsButton.setSelected(false);
+            return;
+        }
+        int smallest =graph.getData().get(0).getData().get(0).getXValue().intValue();
+        int largest = graph.getData().get(0).getData().get(0).getXValue().intValue();
+        for (XYChart.Series<Number,Number> line:graph.getData()){
+                for (XYChart.Data<Number,Number> point:line.getData()){
+                    if (point.getXValue().intValue()<smallest){
+                        smallest =point.getXValue().intValue();
+                    }if (point.getXValue().intValue()>largest){
+                        largest =point.getXValue().intValue();
+                    }
+                }
+        }
+        xAxis.setAutoRanging(false);
+        xAxis.setLowerBound(smallest);
+        xAxis.setUpperBound(largest);
+    }
+
+        public void clearGraph(ActionEvent actionEvent){
+        graph.getData().clear();
     }
 }

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.chart.CategoryAxis?>
 <?import javafx.scene.chart.LineChart?>
 <?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckMenuItem?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
@@ -39,7 +39,7 @@
    <children>
       <LineChart fx:id="graph" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="572.0" prefWidth="500.0" GridPane.halignment="LEFT" GridPane.rowIndex="1" GridPane.rowSpan="2147483647" GridPane.valignment="TOP">
         <xAxis>
-          <CategoryAxis side="BOTTOM" fx:id="xAxis" />
+          <NumberAxis side="BOTTOM" fx:id="xAxis" />
         </xAxis>
         <yAxis>
           <NumberAxis fx:id="yAxis" side="LEFT" />
@@ -110,9 +110,11 @@
               <MenuItem mnemonicParsing="false" onAction="#close" text="Close" />
             </items>
           </Menu>
-          <Menu mnemonicParsing="false" text="Edit" visible="false">
+          <Menu mnemonicParsing="false" text="Edit">
             <items>
-              <MenuItem mnemonicParsing="false" text="Delete" />
+                  <MenuItem mnemonicParsing="false" onAction="#clearGraph" text="Clear" />
+                  <CheckMenuItem mnemonicParsing="false" onAction="#setBounds" fx:id="setBoundsButton" text="Span X Axis" />
+                  <CheckMenuItem fx:id="drawSymbolsButton" mnemonicParsing="false" onAction="#drawSymbols" selected="true" text="Show Symbols" />
             </items>
           </Menu>
           <Menu mnemonicParsing="false" text="Help" visible="false">
