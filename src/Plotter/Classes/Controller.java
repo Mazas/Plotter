@@ -28,7 +28,7 @@ public class Controller {
     public void export(ActionEvent actionEvent) {
         File file = getFile(2);
         if (file!=null) {
-            io.saveAsPng(graph, file.getAbsolutePath());
+            io.saveAsPng(graph, file);
         }
     }
 
@@ -75,14 +75,14 @@ public class Controller {
     public void open(ActionEvent actionEvent) {
         File file = getFile(0);
         if (file!=null&&file.exists()){
-            lineList.setText(io.readSource(file.getAbsolutePath()));
+            lineList.setText(io.readSource(file));
         }
     }
 
     public void saveSource(ActionEvent actionEvent) {
         File file = getFile(1);
         if (file!=null) {
-            io.saveSource(inputToList(), graph.getXAxis().getLabel(), graph.getYAxis().getLabel(), file.getAbsolutePath());
+            io.saveSource(inputToList(), graph.getXAxis().getLabel(), graph.getYAxis().getLabel(), file);
         }
     }
 
