@@ -1,5 +1,6 @@
 package Plotter.Classes;
 
+import com.sun.javafx.tk.Toolkit;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.chart.LineChart;
@@ -49,13 +50,18 @@ public class IOClass {
     }
 
     public boolean saveAsPng(LineChart lineChart, String path) {
+        double height = lineChart.getMinHeight(),width = lineChart.getMinWidth();
+        lineChart.setMinSize(Toolkit.getToolkit().getScreenConfigurationAccessor().getWidth(Toolkit.getToolkit().getPrimaryScreen()),
+                Toolkit.getToolkit().getScreenConfigurationAccessor().getHeight(Toolkit.getToolkit().getPrimaryScreen()));
         WritableImage image = lineChart.snapshot(new SnapshotParameters(), null);
         File file = new File(path);
         try {
             ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", file);
+            lineChart.setMinSize(width, height);
             return true;
         } catch (IOException e) {
             e.printStackTrace();
+            lineChart.setMinSize(width, height);
             return false;
         }
     }
