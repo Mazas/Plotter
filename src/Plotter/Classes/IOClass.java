@@ -16,8 +16,7 @@ import java.util.List;
 
 public class IOClass {
 
-    public void saveSource(ArrayList<XYChart.Series<Number, Number>> lines,String xAxis,String yAxis, String path){
-        File file = new File(path);
+    public void saveSource(ArrayList<XYChart.Series<Number, Number>> lines,String xAxis,String yAxis, File file){
         String writable ="$xAxisName{"+xAxis+"}\n$yAxisName{"+yAxis+"}\n";
         for(XYChart.Series<Number, Number> line:lines) {
             writable += "$"+line.getName() + "{\n\t";
@@ -35,11 +34,11 @@ public class IOClass {
         }
     }
 
-    public String readSource(String path){
+    public String readSource(File file){
         List<String> in;
         String read = "";
         try {
-            in = Files.readAllLines(Paths.get(path));
+            in = Files.readAllLines(Paths.get(file.getAbsolutePath()));
             for (String s: in){
                 read+=s+"\n";
             }
@@ -49,12 +48,11 @@ public class IOClass {
         return read;
     }
 
-    public boolean saveAsPng(LineChart lineChart, String path) {
+    public boolean saveAsPng(LineChart lineChart, File file) {
         double height = lineChart.getMinHeight(),width = lineChart.getMinWidth();
         lineChart.setMinSize(Toolkit.getToolkit().getScreenConfigurationAccessor().getWidth(Toolkit.getToolkit().getPrimaryScreen()),
                 Toolkit.getToolkit().getScreenConfigurationAccessor().getHeight(Toolkit.getToolkit().getPrimaryScreen()));
         WritableImage image = lineChart.snapshot(new SnapshotParameters(), null);
-        File file = new File(path);
         try {
             ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", file);
             lineChart.setMinSize(width, height);
